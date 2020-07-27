@@ -1,18 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <GridLayout
+            android:id="@+id/grid_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:rowCount="4"
+            android:columnCount="4"
+            app:layout_constraintBottom_toTopOf="@id/text_view_game_status"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="5">
+
+            <Button
+                android:id="@+id/button_00"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:textSize="@dimen/cells_text_size"/>
+
+            <Button
+                android:id="@+id/button_01"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="1"
+                android:layout_row="0"/>
+            <Button
+                android:id="@+id/button_02"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="2"
+                android:layout_row="0"/>
+            <Button
+                android:id="@+id/button_10"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="0"
+                android:layout_row="1"/>
+            <Button
+                android:id="@+id/button_11"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="1"
+                android:layout_row="1"/>
+            <Button
+                android:id="@+id/button_12"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="2"
+                android:layout_row="1"/>
+            <Button
+                android:id="@+id/button_20"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="0"
+                android:layout_row="2"/>
+            <Button
+                android:id="@+id/button_21"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="1"
+                android:layout_row="2"/>
+            <Button
+                android:id="@+id/button_22"
+                android:textSize="@dimen/cells_text_size"
+                android:layout_width="@dimen/cell_size"
+                android:layout_height="@dimen/cell_size"
+                android:layout_column="2"
+                android:layout_row="2"/>
+        </GridLayout>
+
+        <TextView
+            android:id="@+id/text_view_game_status"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@id/button_retry"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/grid_buttons"
+            app:layout_constraintVertical_weight="1"/>
+
+        <Button
+            android:id="@+id/button_retry"
+            android:textSize="@dimen/buttons_main_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_game_status"
+            app:layout_constraintVertical_weight="2"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

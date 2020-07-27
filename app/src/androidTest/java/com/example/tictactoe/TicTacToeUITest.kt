@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 class TicTacToeUITest {
 
     private var valuePlayer1: String = "X"
+    private var valuePlayer2: String = "O"
 
     @get:Rule
     var activityRule: ActivityScenarioRule<MainActivity>
@@ -28,4 +29,17 @@ class TicTacToeUITest {
             .check(ViewAssertions.matches(ViewMatchers.withText(valuePlayer1)))
     }
 
+    @Test
+    fun whenPlayer2PlayReturnAnO()
+    {
+        onView(withId(R.id.button_00)).perform(ViewActions.click())
+        onView(withId(R.id.button_01)).perform(ViewActions.click())
+        onView(withId(R.id.button_01)).check(
+            ViewAssertions.matches(
+                ViewMatchers.withText(
+                    valuePlayer2
+                )
+            )
+        )
+    }
 }

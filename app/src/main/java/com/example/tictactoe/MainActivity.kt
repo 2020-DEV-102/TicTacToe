@@ -33,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                 buttons[i][j] = findViewById(resourceId)
 
                 buttons[i][j]?.setOnClickListener {
-                    buttons[i][j]?.text = "X"
+                    mainActivityViewModel.updateSelectedCell(i,j)
+                    buttons[i][j]?.text = mainActivityViewModel.getSelectedCellValue()
                 }
             }
         }

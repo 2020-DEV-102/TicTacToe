@@ -10,5 +10,5 @@ interface IBoardRepository {
 
     //fun updateCell(square : Square, isPlayer1Turn: Boolean)
 
-    fun refreshCells()
+    fun refreshSquares()
 }

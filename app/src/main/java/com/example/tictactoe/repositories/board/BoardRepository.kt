@@ -25,14 +25,7 @@ class BoardRepository : IBoardRepository {
         return cells
     }
 
-    /*override fun updateCell(square: Square, isPlayer1Turn: Boolean) {
-        when(isPlayer1Turn){
-            true -> square.state = SquareState.X
-            false -> square.state = SquareState.O
-        }
-    }*/
-
-    override fun refreshCells() {
+    override fun refreshSquares() {
         for (i in 0 until Constants.boardSize) {
             for (j in 0 until Constants.boardSize) {
                 cells[i][j].state = SquareState.EMPTY

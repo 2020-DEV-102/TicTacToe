@@ -18,16 +18,7 @@ import org.mockito.Mock
 @RunWith(Parameterized::class)
 class PlayerWinTest(private val positions: MutableList<Position>) {
 
-    @Mock
     private var gameManager: GameManager = GameManager()
-
-    @Mock
-    private var boardRepository: BoardRepository = BoardRepository()
-
-    @InjectMockKs
-    private lateinit var viewModel: MainActivityViewModel
-
-    var row1 = arrayListOf (Position(0,0), Position (0,1), Position(0,2))
 
     companion object {
         @JvmStatic
@@ -41,7 +32,11 @@ class PlayerWinTest(private val positions: MutableList<Position>) {
             arrayListOf (Position(2,0), Position (2,1), Position(2,2)),
 
             // The player filled the first column
-            arrayListOf (Position(0,0), Position (1,0), Position(2,0))
+            arrayListOf (Position(0,0), Position (1,0), Position(2,0)),
+            // The player filled the second column
+            arrayListOf (Position(0,1), Position (1,1), Position(2,1)),
+            // The player filled the third column
+            arrayListOf (Position(0,2), Position (1,2), Position(2,2))
         )
     }
 
@@ -51,7 +46,6 @@ class PlayerWinTest(private val positions: MutableList<Position>) {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = MainActivityViewModel(gameManager, boardRepository)
     }
 
     @Test

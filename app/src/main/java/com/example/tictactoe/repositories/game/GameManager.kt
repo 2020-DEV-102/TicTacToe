@@ -1,18 +1,18 @@
 package com.example.tictactoe.repositories.game
 
-import com.example.tictactoe.models.Cell
-import com.example.tictactoe.models.CellStatus
+import com.example.tictactoe.models.Square
+import com.example.tictactoe.models.SquareState
 
 class GameManager {
     var isGameOver : Boolean = false
     var isPlayer1Turn : Boolean = true
 
-    fun isAWin(cell: Cell, cells: Array<Array<Cell>>) : Boolean
+    fun isAWin(square: Square, squares: Array<Array<Square>>) : Boolean
     {
-        val lineVertical = cells[cell.position.row]
+        val lineVertical = squares[square.position.row]
 
-        if (lineVertical.all { it!!.status == CellStatus.X } || lineVertical.all { it!!.status == CellStatus.O })
-            return true
+        /*if (lineVertical.all { it!!.state == SquareState.X } || lineVertical.all { it!!.state == SquareState.O })
+            return true*/
 
         return false
     }

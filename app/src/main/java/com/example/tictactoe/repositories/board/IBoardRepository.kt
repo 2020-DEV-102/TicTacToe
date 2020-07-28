@@ -1,14 +1,14 @@
 package com.example.tictactoe.repositories.board
 
-import com.example.tictactoe.models.Cell
+import com.example.tictactoe.models.Square
 import com.example.tictactoe.models.Position
 
 interface IBoardRepository {
-    fun getCell(position : Position) : Cell?
+    fun getSquare(position : Position) : Square?
 
-    fun getAllCells() : Array<Array<Cell>>
+    fun getAllSquares() : Array<Array<Square>>
 
-    fun updateCell(cell : Cell, isPlayer1Turn: Boolean)
+    //fun updateCell(square : Square, isPlayer1Turn: Boolean)
 
     fun refreshCells()
 }

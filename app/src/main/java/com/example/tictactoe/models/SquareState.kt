@@ -1,8 +1,7 @@
 package com.example.tictactoe.models
 
-enum class CellStatus
+enum class SquareState
 {
     EMPTY,
-    X,
-    O
+    FULL
 }

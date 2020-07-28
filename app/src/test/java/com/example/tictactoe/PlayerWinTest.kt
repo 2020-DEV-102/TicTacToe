@@ -1,15 +1,14 @@
 package com.example.tictactoe
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.tictactoe.models.Cell
-import com.example.tictactoe.models.CellStatus
+import com.example.tictactoe.models.Square
+import com.example.tictactoe.models.SquareState
 import com.example.tictactoe.models.Position
 import com.example.tictactoe.repositories.board.BoardRepository
 import com.example.tictactoe.repositories.game.GameManager
 import com.example.tictactoe.utilities.Constants
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.SpyK
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -22,7 +21,7 @@ import org.mockito.Mock
 class PlayerWinTest(private val position: Position) {
 
     private val cells =
-        Array(Constants.boardSize) { Array(Constants.boardSize) { Cell(Position(0, 0)) } }
+        Array(Constants.boardSize) { Array(Constants.boardSize) { Square(Position(0, 0)) } }
 
     @Mock
     private var gameManager: GameManager = GameManager()
@@ -39,8 +38,14 @@ class PlayerWinTest(private val position: Position) {
         fun data() = listOf(
             // We can add here all the positions of the last cell clicked we want to test
             Position(0, 0),
+            Position(0, 1),
+            Position(0, 2),
             Position(1, 0),
-            Position(2, 0)
+            Position(1, 1),
+            Position(1, 2),
+            Position(2, 0),
+            Position(2, 1),
+            Position(2, 2)
         )
     }
 
@@ -60,8 +65,13 @@ class PlayerWinTest(private val position: Position) {
 
     @Test
     fun three_in_a_row_wins() {
-        cells[position.row].forEach { it.status = CellStatus.O }
-        val isAWin = gameManager.isAWin(Cell(position, CellStatus.O), cells)
-        Assert.assertEquals(true, isAWin)
+        /*cells[position.row].forEach { it.state = SquareState.O }
+        val isAWin = gameManager.isAWin(Square(position, SquareState.O), cells)
+        Assert.assertEquals(true, isAWin)*/
+    }
+
+    @Test
+    fun three_in_a_column_wins() {
+
     }
 }

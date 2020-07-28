@@ -2,18 +2,14 @@ package com.example.tictactoe
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.tictactoe.models.*
-import com.example.tictactoe.repositories.board.BoardRepository
 import com.example.tictactoe.repositories.game.GameManager
-import com.example.tictactoe.utilities.Constants
 import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.InjectMockKs
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import org.mockito.Mock
 
 @RunWith(Parameterized::class)
 class PlayerWinTest(private val positions: MutableList<Position>) {
@@ -36,7 +32,10 @@ class PlayerWinTest(private val positions: MutableList<Position>) {
             // The player filled the second column
             arrayListOf (Position(0,1), Position (1,1), Position(2,1)),
             // The player filled the third column
-            arrayListOf (Position(0,2), Position (1,2), Position(2,2))
+            arrayListOf (Position(0,2), Position (1,2), Position(2,2)),
+
+            // The player filled the down diagonal
+            arrayListOf (Position(0,0), Position (1,1), Position(2,2))
         )
     }
 

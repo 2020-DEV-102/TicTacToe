@@ -3,6 +3,7 @@ package com.example.tictactoe
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.tictactoe.databinding.ActivityMainBinding
 import com.example.tictactoe.models.Position
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initBoard()
+        initObservers()
     }
 
     private fun initBoard()
@@ -36,10 +38,18 @@ class MainActivity : AppCompatActivity() {
                 buttons[i][j]?.setOnClickListener {
                     if(mainActivityViewModel.canUpdateSelectedCell(Position(i,j))) {
                         mainActivityViewModel.updateSelectedCell()
+                        mainActivityViewModel.checkForWin()
                         buttons[i][j]?.text = mainActivityViewModel.getSelectedCellValue()
                     }
                 }
             }
         }
+    }
+
+    private fun initObservers()
+    {
+        mainActivityViewModel.gameStatusText.observe(this, Observer {
+            binding.textViewGameStatus.text = it
+        })
     }
 }

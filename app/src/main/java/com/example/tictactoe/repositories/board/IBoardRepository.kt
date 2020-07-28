@@ -6,7 +6,7 @@ import com.example.tictactoe.models.Position
 interface IBoardRepository {
     fun getCell(position : Position) : Cell?
 
-    fun getAllCells() : List<Cell?>
+    fun getAllCells() : Array<Array<Cell>>
 
     fun updateCell(cell : Cell, isPlayer1Turn: Boolean)
 

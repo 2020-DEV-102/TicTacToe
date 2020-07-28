@@ -6,13 +6,13 @@ import com.example.tictactoe.models.Position
 import com.example.tictactoe.utilities.Constants
 
 class BoardRepository : IBoardRepository {
-    private val cells = Array(Constants.boardSize) { arrayOfNulls<Cell>(Constants.boardSize) }
+    private val cells = Array(Constants.boardSize) { Array(Constants.boardSize){Cell(Position(0,0))} }
 
     init
     {
         for (i in 0 until Constants.boardSize) {
             for (j in 0 until Constants.boardSize) {
-                cells[i][j] = Cell(Position(i,j))
+                cells[i][j].position = Position(i,j)
             }
         }
     }
@@ -21,8 +21,8 @@ class BoardRepository : IBoardRepository {
         return cells[position.row][position.column]
     }
 
-    override fun getAllCells(): List<Cell?> {
-        return cells.flatten()
+    override fun getAllCells(): Array<Array<Cell>> {
+        return cells
     }
 
     override fun updateCell(cell: Cell, isPlayer1Turn: Boolean) {
@@ -35,7 +35,7 @@ class BoardRepository : IBoardRepository {
     override fun refreshCells() {
         for (i in 0 until Constants.boardSize) {
             for (j in 0 until Constants.boardSize) {
-                cells[i][j]!!.status = CellStatus.EMPTY
+                cells[i][j].status = CellStatus.EMPTY
             }
         }
     }

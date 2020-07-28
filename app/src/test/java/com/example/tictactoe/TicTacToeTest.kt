@@ -1,36 +1,47 @@
 package com.example.tictactoe
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.tictactoe.models.Cell
 import com.example.tictactoe.models.CellStatus
 import com.example.tictactoe.models.Position
-import com.example.tictactoe.modules.appModule
 import com.example.tictactoe.repositories.board.BoardRepository
 import com.example.tictactoe.repositories.game.GameManager
+import com.example.tictactoe.utilities.Constants
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.koin.core.context.startKoin
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import org.mockito.Mock
 
 class TicTacToeTest {
+    private val cells = Array(Constants.boardSize) { Array(Constants.boardSize){Cell(Position(0,0))} }
 
     @SpyK
     private var boardRepository : BoardRepository = BoardRepository()
 
-    @RelaxedMockK
-    private lateinit var gameManager: GameManager
+    @Mock
+    private var gameManager: GameManager = GameManager()
 
     @InjectMockKs
     private lateinit var viewModel: MainActivityViewModel
 
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        for (i in 0 until Constants.boardSize) {
+            for (j in 0 until Constants.boardSize) {
+                cells[i][j].position = Position(i,j)
+            }
+        }
         viewModel = MainActivityViewModel(gameManager, boardRepository)
     }
 
@@ -57,5 +68,13 @@ class TicTacToeTest {
         val canUpdate = viewModel.canUpdateSelectedCell(Position(0,0))
         verify { boardRepository.getCell(Position(0,0)) }
         Assert.assertEquals(false, canUpdate)
+    }
+
+    @Test
+    fun three_in_a_row_wins()
+    {
+        cells[0].forEach { it.status = CellStatus.O }
+        val isAWin = gameManager.isAWin(Cell(Position(0,0), CellStatus.O), cells)
+        Assert.assertEquals(true, isAWin)
     }
 }

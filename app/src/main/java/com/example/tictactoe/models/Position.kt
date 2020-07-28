@@ -1,4 +1,4 @@
 package com.example.tictactoe.models
 
-data class Position (val row: Int, val column: Int) {
+data class Position (val row: Int, val column: Int){
 }

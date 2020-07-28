@@ -1,9 +1,7 @@
 package com.example.tictactoe
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.tictactoe.models.Square
-import com.example.tictactoe.models.SquareState
-import com.example.tictactoe.models.Position
+import com.example.tictactoe.models.*
 import com.example.tictactoe.repositories.board.BoardRepository
 import com.example.tictactoe.repositories.game.GameManager
 import com.example.tictactoe.utilities.Constants
@@ -18,10 +16,7 @@ import org.junit.runners.Parameterized
 import org.mockito.Mock
 
 @RunWith(Parameterized::class)
-class PlayerWinTest(private val position: Position) {
-
-    private val cells =
-        Array(Constants.boardSize) { Array(Constants.boardSize) { Square(Position(0, 0)) } }
+class PlayerWinTest(private val positions: MutableList<Position>) {
 
     @Mock
     private var gameManager: GameManager = GameManager()
@@ -32,20 +27,21 @@ class PlayerWinTest(private val position: Position) {
     @InjectMockKs
     private lateinit var viewModel: MainActivityViewModel
 
+    var row1 = arrayListOf (Position(0,0), Position (0,1), Position(0,2))
+
     companion object {
         @JvmStatic
-        @Parameterized.Parameters
+        @Parameterized.Parameters(name = "{index}->{0}")
         fun data() = listOf(
-            // We can add here all the positions of the last cell clicked we want to test
-            Position(0, 0),
-            Position(0, 1),
-            Position(0, 2),
-            Position(1, 0),
-            Position(1, 1),
-            Position(1, 2),
-            Position(2, 0),
-            Position(2, 1),
-            Position(2, 2)
+            // The player filled the first row
+            arrayListOf (Position(0,0), Position (0,1), Position(0,2)),
+            // The player filled the second row
+            arrayListOf (Position(1,0), Position (1,1), Position(1,2)),
+            // The player filled the third row
+            arrayListOf (Position(2,0), Position (2,1), Position(2,2)),
+
+            // The player filled the first column
+            arrayListOf (Position(0,0), Position (1,0), Position(2,0))
         )
     }
 
@@ -55,23 +51,12 @@ class PlayerWinTest(private val position: Position) {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        for (i in 0 until Constants.boardSize) {
-            for (j in 0 until Constants.boardSize) {
-                cells[i][j].position = Position(i, j)
-            }
-        }
         viewModel = MainActivityViewModel(gameManager, boardRepository)
     }
 
     @Test
-    fun three_in_a_row_wins() {
-        /*cells[position.row].forEach { it.state = SquareState.O }
-        val isAWin = gameManager.isAWin(Square(position, SquareState.O), cells)
-        Assert.assertEquals(true, isAWin)*/
-    }
-
-    @Test
-    fun three_in_a_column_wins() {
-
+    fun playerWins() {
+        val isAWin = gameManager.playerWin(positions, positions.first())
+        Assert.assertEquals(true, isAWin)
     }
 }

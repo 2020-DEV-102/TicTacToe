@@ -18,6 +18,8 @@ class MainActivityViewModel constructor(private val gameManager: GameManager, pr
     private val player1 = Player(Symbol.X)
     private val player2 = Player(Symbol.O)
 
+    private var playingPlayer = player1
+
     private var selectedSymbol : String? = ""
 
     private val _gameStatusText = MutableLiveData<String>().apply {
@@ -31,9 +33,9 @@ class MainActivityViewModel constructor(private val gameManager: GameManager, pr
     {
         updateSelectedSquare(position)
         updatePlayerPositions(position)
-        checkForWin()
+        checkForWin(position)
         if(!gameManager.isGameOver) {
-            gameManager.isPlayer1Turn = !gameManager.isPlayer1Turn
+            playingPlayer = if(playingPlayer == player1) player2 else player1
             updatePlayerTurnText()
         }
     }
@@ -47,44 +49,29 @@ class MainActivityViewModel constructor(private val gameManager: GameManager, pr
         return boardRepository.getSquare(position)!!.state == SquareState.EMPTY
     }
 
-    fun updateSelectedSquare(position: Position) {
+    private fun updateSelectedSquare(position: Position) {
         boardRepository.getSquare(position)!!.state = SquareState.FULL
-        selectedSymbol = when(gameManager.isPlayer1Turn) {
-            true -> {
-                Symbol.X.toString()
-            }
-            false -> {
-                Symbol.O.toString()
-            }
-        }
+        selectedSymbol = playingPlayer.symbol.toString()
     }
 
-    fun updatePlayerPositions(position: Position)
+    private fun updatePlayerPositions(position: Position)
     {
-        val isPlayerOneTurn = gameManager.isPlayer1Turn
-        when(isPlayerOneTurn) {
-            true -> {
-                player1.positions.add(position)
-            }
-            false -> {
-                player2.positions.add(position)
-            }
-        }
+        playingPlayer.positions.add(position)
     }
 
-    fun checkForWin()
+    private fun checkForWin(lastPosition: Position)
     {
-        /*if(gameManager.isAWin(selectedSquare!!, boardRepository.getAllSquares()))
+        if(gameManager.playerWin(playingPlayer.positions, lastPosition))
         {
             endGame()
-        }*/
+        }
     }
 
     private fun updatePlayerTurnText()
     {
-        when(gameManager.isPlayer1Turn){
-            true -> _gameStatusText.postValue(player1TurnText)
-            false -> _gameStatusText.postValue(player2TurnText)
+        when(playingPlayer){
+            player1 -> _gameStatusText.postValue(player1TurnText)
+            player2 -> _gameStatusText.postValue(player2TurnText)
         }
     }
 

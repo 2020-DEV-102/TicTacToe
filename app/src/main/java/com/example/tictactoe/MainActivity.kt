@@ -5,13 +5,15 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import com.example.tictactoe.databinding.ActivityMainBinding
+import com.example.tictactoe.models.Position
 import com.example.tictactoe.utilities.Constants
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private val buttons = Array(  Constants.boardSize) { arrayOfNulls<Button>(Constants.boardSize) }
-    private lateinit var mainActivityViewModel : MainActivityViewModel
+    private val mainActivityViewModel: MainActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +21,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
         initBoard()
     }
@@ -33,8 +34,10 @@ class MainActivity : AppCompatActivity() {
                 buttons[i][j] = findViewById(resourceId)
 
                 buttons[i][j]?.setOnClickListener {
-                    mainActivityViewModel.updateSelectedCell(i,j)
-                    buttons[i][j]?.text = mainActivityViewModel.getSelectedCellValue()
+                    if(mainActivityViewModel.canUpdateSelectedCell(Position(i,j))) {
+                        mainActivityViewModel.updateSelectedCell()
+                        buttons[i][j]?.text = mainActivityViewModel.getSelectedCellValue()
+                    }
                 }
             }
         }

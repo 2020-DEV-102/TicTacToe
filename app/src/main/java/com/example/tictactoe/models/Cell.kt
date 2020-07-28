@@ -1,4 +1,4 @@
 package com.example.tictactoe.models
 
-data class Cell(val row : Int, val column : Int, var status: CellStatus = CellStatus.EMPTY) {
+data class Cell(val position: Position, var status: CellStatus = CellStatus.EMPTY) {
 }

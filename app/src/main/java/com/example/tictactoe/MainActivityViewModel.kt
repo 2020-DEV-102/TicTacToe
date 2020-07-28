@@ -1,19 +1,27 @@
 package com.example.tictactoe
 
 import androidx.lifecycle.ViewModel
+import com.example.tictactoe.models.Cell
+import com.example.tictactoe.models.CellStatus
+import com.example.tictactoe.models.Position
 import com.example.tictactoe.repositories.board.BoardRepository
+import com.example.tictactoe.repositories.game.GameManager
 
-class MainActivityViewModel : ViewModel() {
+class MainActivityViewModel constructor(private val gameManager: GameManager, private val boardRepository: BoardRepository ) : ViewModel(){
 
-    private var isPlayer1Turn : Boolean = true
-    private lateinit var selectedCellValue : String
+    var selectedCell : Cell? = null
 
-    fun getSelectedCellValue() : String { return selectedCellValue }
+    fun getSelectedCellValue() : String { return selectedCell!!.status.toString() }
 
-    fun updateSelectedCell(row: Int, column: Int) {
-        val selectedCell = BoardRepository.getCell(row, column)
-         BoardRepository.updateCell(selectedCell!!, isPlayer1Turn)
-         selectedCellValue = selectedCell.status.toString()
-        isPlayer1Turn = !isPlayer1Turn
+    fun canUpdateSelectedCell(position: Position) : Boolean
+    {
+        selectedCell = boardRepository.getCell(position)
+        return selectedCell?.status == CellStatus.EMPTY
+    }
+
+    fun updateSelectedCell() {
+        val isPlayerOneTurn = gameManager.isPlayer1Turn
+        boardRepository.updateCell(selectedCell!!, isPlayerOneTurn)
+        gameManager.isPlayer1Turn = !isPlayerOneTurn
     }
 }

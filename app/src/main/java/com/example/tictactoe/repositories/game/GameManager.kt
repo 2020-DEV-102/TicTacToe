@@ -1,10 +1,20 @@
 package com.example.tictactoe.repositories.game
 
+import com.example.tictactoe.models.Player
 import com.example.tictactoe.models.Position
+import com.example.tictactoe.models.Symbol
 import com.example.tictactoe.utilities.Constants
+import com.example.tictactoe.utilities.Operations.pow
 
 class GameManager {
     var isGameOver : Boolean = false
+    var roundCount : Int = 0
+
+    private val player1 = Player(Symbol.X)
+    private val player2 = Player(Symbol.O)
+
+    var players = arrayOf(player1, player2)
+    var playingPlayer = players[0]
 
     fun playerWin(positions: MutableList<Position>, lastPositionPlayed: Position) : Boolean
     {
@@ -15,6 +25,10 @@ class GameManager {
         if(hasADiagonal(positions, lastPositionPlayed)) return true
 
         return false
+    }
+
+    fun isADraw() : Boolean {
+        return roundCount == Constants.boardSize.pow(2)
     }
 
     private fun hasARow(positions: MutableList<Position>, lastPositionPlayed: Position) : Boolean {

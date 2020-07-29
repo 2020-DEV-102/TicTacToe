@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class PlayerWinTest(private val positions: MutableList<Position>) {
+class PlayerWinsTest(private val positions: MutableList<Position>) {
 
     private var gameManager: GameManager = GameManager()
 

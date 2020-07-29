@@ -1,77 +1,90 @@
 package com.example.tictactoe
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.tictactoe.models.Square
-import com.example.tictactoe.models.SquareState
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import com.example.tictactoe.models.Position
 import com.example.tictactoe.repositories.board.BoardRepository
 import com.example.tictactoe.repositories.game.GameManager
-import com.example.tictactoe.utilities.Constants
-import io.mockk.*
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.SpyK
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.Mock
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.data.blocking.forAll
+import io.kotest.data.row
+import io.kotest.matchers.shouldBe
+import org.junit.*
 
-class TicTacToeTest {
-    private val cells = Array(Constants.boardSize) { Array(Constants.boardSize){Square(Position(0,0))} }
+class TicTacToeTest : FunSpec( {
 
-    @SpyK
-    private var boardRepository : BoardRepository = BoardRepository()
-
-    @Mock
-    private var gameManager: GameManager = GameManager()
-
-    @InjectMockKs
-    private lateinit var viewModel: MainActivityViewModel
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-        for (i in 0 until Constants.boardSize) {
-            for (j in 0 until Constants.boardSize) {
-                cells[i][j].position = Position(i,j)
+    fun enableMutableLiveDataComponent() {
+        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+            override fun executeOnDiskIO(runnable: Runnable) {
+                runnable.run()
             }
+
+            override fun postToMainThread(runnable: Runnable) {
+                runnable.run()
+            }
+
+            override fun isMainThread(): Boolean = true
+        })
+    }
+
+    fun getViewModel() : MainActivityViewModel
+    {
+        val boardRepository = BoardRepository()
+        val gameManager = GameManager()
+        return MainActivityViewModel(gameManager, boardRepository)
+    }
+
+    test("X always goes first") {
+        enableMutableLiveDataComponent()
+        forAll(
+            row(Position(0,0)),
+            row(Position(0,1))
+        ) { position ->
+            val viewModel = getViewModel()
+            viewModel.updateGame(position)
+            viewModel.getSelectedSquareValue() shouldBe ("X")
         }
-        viewModel = MainActivityViewModel(gameManager, boardRepository)
     }
 
-    @Test
-    fun when_player2_play_return_an_O() {
-        /*val cell = Square(Position(0, 0), SquareState.EMPTY)
-        boardRepository.updateCell(cell, false)
-        Assert.assertEquals(SquareState.O, cell.state)*/
+    test("when player2 plays return an O") {
+        enableMutableLiveDataComponent()
+        forAll(
+            row(Position(0,0)),
+            row(Position(0,1))
+        ) { position ->
+            val boardRepository = BoardRepository()
+            val gameManager = GameManager()
+            val viewModel = MainActivityViewModel(gameManager, boardRepository)
+            gameManager.playingPlayer = gameManager.players[1]
+            viewModel.updateGame(position)
+            viewModel.getSelectedSquareValue() shouldBe ("O")
+        }
     }
 
-    @Test
-    fun cannot_play_on_a_X_played_position()
-    {
-        /*every { boardRepository.getSquare(Position(0,0))!!.state } returns SquareState.X
-        val canUpdate = viewModel.canUpdateSelectedSquare(Position(0,0))
-        verify { boardRepository.getSquare(Position(0,0)) }
-        Assert.assertEquals(false, canUpdate)*/
+    test("cannot play on a played position") {
+        enableMutableLiveDataComponent()
+
+        forAll(
+            row(Position(0,0)),
+            row(Position(0,1))
+        ) { position ->
+            val viewModel = getViewModel()
+            viewModel.updateGame(position)
+            viewModel.canUpdateSelectedSquare(position) shouldBe (false)
+        }
     }
 
-    @Test
-    fun cannot_play_on_a_O_played_position()
-    {
-        /*every { boardRepository.getSquare(Position(0,0))!!.state } returns SquareState.O
-        val canUpdate = viewModel.canUpdateSelectedSquare(Position(0,0))
-        verify { boardRepository.getSquare(Position(0,0)) }
-        Assert.assertEquals(false, canUpdate)*/
+    test("draw game if all squares are filled") {
+        enableMutableLiveDataComponent()
+        forAll(
+            row(0, false),
+            row(2, false),
+            row(9, true)
+        ) { roundCount, isADraw ->
+            val gameManager = GameManager()
+            gameManager.roundCount = roundCount
+            gameManager.isADraw() shouldBe isADraw
+        }
     }
-
-    @Test
-    fun three_in_a_row_wins()
-    {
-        /*cells[0].forEach { it.state = SquareState.O }
-        val isAWin = gameManager.isAWin(Square(Position(0,0), SquareState.O), cells)
-        Assert.assertEquals(true, isAWin)*/
-    }
-}
+})

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         initBoard()
         initObservers()
+        initListeners()
     }
 
     private fun initBoard()
@@ -50,5 +51,17 @@ class MainActivity : AppCompatActivity() {
         mainActivityViewModel.gameStatusText.observe(this, Observer {
             binding.textViewGameStatus.text = it
         })
+    }
+
+    private fun initListeners()
+    {
+        binding.buttonRetry.setOnClickListener {
+            mainActivityViewModel.resetGame()
+            for (i in 0 until Constants.boardSize) {
+                for (j in 0 until Constants.boardSize) {
+                    buttons[i][j]!!.text = ""
+                }
+            }
+        }
     }
 }

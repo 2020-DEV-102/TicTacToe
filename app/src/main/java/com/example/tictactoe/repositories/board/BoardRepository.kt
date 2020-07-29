@@ -1,7 +1,6 @@
 package com.example.tictactoe.repositories.board
 
 import com.example.tictactoe.models.Square
-import com.example.tictactoe.models.SquareState
 import com.example.tictactoe.models.Position
 import com.example.tictactoe.utilities.Constants
 
@@ -21,14 +20,14 @@ class BoardRepository : IBoardRepository {
         return board[position.row][position.column]
     }
 
-    override fun getAllSquares(): Array<Array<Square>> {
-        return board
+    override fun updateSquare(position: Position, isFree: Boolean) {
+        board[position.row][position.column].isFree = isFree
     }
 
-    override fun refreshSquares() {
+    override fun cleanBoard() {
         for (i in 0 until Constants.boardSize) {
             for (j in 0 until Constants.boardSize) {
-                board[i][j].state = SquareState.EMPTY
+                board[i][j].isFree = true
             }
         }
     }

@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tictactoe.models.*
 import com.example.tictactoe.repositories.board.BoardRepository
-import com.example.tictactoe.repositories.game.GameManager
+import com.example.tictactoe.repositories.game.TicTacToeGameManager
 
-class MainActivityViewModel constructor(private val gameManager: GameManager, private val boardRepository: BoardRepository ) : ViewModel(){
+class MainActivityViewModel constructor(private val boardRepository: BoardRepository ) : ViewModel(){
 
     companion object {
         private const val player1TurnText = "Player 1 turn"
@@ -15,6 +15,8 @@ class MainActivityViewModel constructor(private val gameManager: GameManager, pr
         private const val isAWinText = "It's a win"
         private const val isADraw = "It's a draw"
     }
+
+    private val ticTacToeGameManager  = TicTacToeGameManager()
 
     private val _gameStatusText = MutableLiveData<String>().apply {
         postValue(player1TurnText)
@@ -30,57 +32,64 @@ class MainActivityViewModel constructor(private val gameManager: GameManager, pr
         updatePlayerPositions(position)
         checkForWin(position)
         checkForDraw()
-        if(!gameManager.isGameOver) {
-            gameManager.playingPlayer = if(gameManager.playingPlayer == gameManager.players[0]) gameManager.players[1] else gameManager.players[0]
+        if(!ticTacToeGameManager.isGameOver) {
+            ticTacToeGameManager.playingPlayer = if(ticTacToeGameManager.playingPlayer == ticTacToeGameManager.players[0]) ticTacToeGameManager.players[1] else ticTacToeGameManager.players[0]
             increaseRoundCount()
             updatePlayerTurnText()
         }
     }
 
+    fun resetGame()
+    {
+        ticTacToeGameManager.restartGame()
+        boardRepository.cleanBoard()
+        _gameStatusText.postValue(player1TurnText)
+    }
+
     fun canUpdateSelectedSquare(position: Position) : Boolean
     {
-        if(gameManager.isGameOver) {
+        if(ticTacToeGameManager.isGameOver) {
             return false
         }
-        return boardRepository.getSquare(position)!!.state == SquareState.EMPTY
+        return boardRepository.getSquare(position)!!.isFree
     }
 
     private fun updateSelectedSquare(position: Position) {
-        boardRepository.getSquare(position)!!.state = SquareState.FULL
-        selectedPlayerSymbol = gameManager.playingPlayer.symbol.toString()
+        boardRepository.updateSquare(position, false)
+        selectedPlayerSymbol = ticTacToeGameManager.playingPlayer.symbol.toString()
     }
 
     private fun updatePlayerPositions(position: Position)
     {
-        gameManager.playingPlayer.positions.add(position)
+        ticTacToeGameManager.playingPlayer.positions.add(position)
     }
 
     private fun checkForWin(lastPositionPlayed: Position)
     {
-        if(gameManager.playerWin(gameManager.playingPlayer.positions, lastPositionPlayed))
+        if(ticTacToeGameManager.playerWin(ticTacToeGameManager.playingPlayer.positions, lastPositionPlayed))
             endGame(isAWinText)
     }
 
     private fun checkForDraw() {
-        if(gameManager.isADraw())
+        if(ticTacToeGameManager.isADraw())
             endGame(isADraw)
     }
 
     private fun updatePlayerTurnText()
     {
-        when(gameManager.playingPlayer){
-            gameManager.players[0] -> _gameStatusText.postValue(player1TurnText)
-            gameManager.players[1] -> _gameStatusText.postValue(player2TurnText)
+        when(ticTacToeGameManager.playingPlayer){
+            ticTacToeGameManager.players[0] -> _gameStatusText.postValue(player1TurnText)
+            ticTacToeGameManager.players[1] -> _gameStatusText.postValue(player2TurnText)
         }
     }
 
     private fun increaseRoundCount() {
-        gameManager.roundCount++
+        ticTacToeGameManager.turnNumber++
     }
 
     private fun endGame(endText : String)
     {
         _gameStatusText.postValue(endText)
-        gameManager.isGameOver = true
+        ticTacToeGameManager.isGameOver = true
     }
 }

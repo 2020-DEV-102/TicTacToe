@@ -59,9 +59,9 @@ class MainActivityViewModel constructor(private val gameManager: GameManager, pr
         playingPlayer.positions.add(position)
     }
 
-    private fun checkForWin(lastPosition: Position)
+    private fun checkForWin(lastPositionPlayed: Position)
     {
-        if(gameManager.playerWin(playingPlayer.positions, lastPosition))
+        if(gameManager.playerWin(playingPlayer.positions, lastPositionPlayed))
         {
             endGame()
         }

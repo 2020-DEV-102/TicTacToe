@@ -5,25 +5,40 @@ import com.example.tictactoe.utilities.Constants
 
 class GameManager {
     var isGameOver : Boolean = false
-    var isPlayer1Turn : Boolean = true
 
-    fun playerWin(positions: MutableList<Position>, lastPosition: Position) : Boolean
+    fun playerWin(positions: MutableList<Position>, lastPositionPlayed: Position) : Boolean
     {
-        // check on horizontal lines
-        val verticalLine = positions.filter { it.row == lastPosition.row }
-        if(verticalLine.size == Constants.boardSize)
-            return true
+        if(hasARow(positions, lastPositionPlayed)) return true
 
-        // check on vertical lines
-        val horizontalLine = positions.filter { it.column == lastPosition.column }
-        if(horizontalLine.size == Constants.boardSize)
-            return true
+        if(hasAColumn(positions, lastPositionPlayed)) return true
 
-        // check on down diagonal
-        if(lastPosition.row == lastPosition.column)
-        {
-            val lineDiagonal = positions.filter { it.row == it.column}
-            if(lineDiagonal.size == Constants.boardSize)
+        if(hasADiagonal(positions, lastPositionPlayed)) return true
+
+        return false
+    }
+
+    private fun hasARow(positions: MutableList<Position>, lastPositionPlayed: Position) : Boolean {
+        val row = positions.filter { it.row == lastPositionPlayed.row }
+        return row.size == Constants.boardSize
+    }
+
+    private fun hasAColumn(positions: MutableList<Position>, lastPositionPlayed: Position) : Boolean {
+        val column = positions.filter { it.column == lastPositionPlayed.column }
+        return column.size == Constants.boardSize
+    }
+
+    private fun hasADiagonal(positions: MutableList<Position>, lastPositionPlayed: Position) : Boolean {
+        // check on diagonal \
+        if (lastPositionPlayed.row == lastPositionPlayed.column) {
+            val diagonalDown = positions.filter { it.row == it.column }
+            if (diagonalDown.size == Constants.boardSize)
+                return true
+        }
+
+        // check on diagonal /
+        if(lastPositionPlayed.row + lastPositionPlayed.column == Constants.boardSize - 1) {
+            val diagonalUp = positions.filter { it.row + it.column == Constants.boardSize - 1 }
+            if (diagonalUp.size == Constants.boardSize)
                 return true
         }
 

@@ -34,22 +34,17 @@ class PlayerWinTest(private val positions: MutableList<Position>) {
             // The player filled the third column
             arrayListOf (Position(0,2), Position (1,2), Position(2,2)),
 
-            // The player filled the down diagonal
-            arrayListOf (Position(0,0), Position (1,1), Position(2,2))
+            // The player filled the diagonal \
+            arrayListOf (Position(0,0), Position (1,1), Position(2,2)),
+
+            // The player filled the diagonal /
+            arrayListOf (Position(2,0), Position (1,1), Position(0,2))
         )
-    }
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
     }
 
     @Test
     fun playerWins() {
-        val isAWin = gameManager.playerWin(positions, positions.first())
+        val isAWin = gameManager.playerWin(positions, positions[0])
         Assert.assertEquals(true, isAWin)
     }
 }

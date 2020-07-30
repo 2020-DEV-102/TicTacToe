@@ -5,16 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tictactoe.models.*
 import com.example.tictactoe.repositories.board.BoardRepository
-import com.example.tictactoe.repositories.game.TicTacToeGameManager
+import com.example.tictactoe.managers.game.TicTacToeGameManager
+import com.example.tictactoe.utilities.Constants.Companion.isADraw
+import com.example.tictactoe.utilities.Constants.Companion.isAWinText
+import com.example.tictactoe.utilities.Constants.Companion.player1TurnText
+import com.example.tictactoe.utilities.Constants.Companion.player2TurnText
 
-class MainActivityViewModel constructor(private val boardRepository: BoardRepository ) : ViewModel(){
-
-    companion object {
-        private const val player1TurnText = "Player 1 turn"
-        private const val player2TurnText = "Player 2 turn"
-        private const val isAWinText = "It's a win"
-        private const val isADraw = "It's a draw"
-    }
+class MainActivityViewModel constructor(private val boardRepository: BoardRepository) : ViewModel(){
 
     private val ticTacToeGameManager  = TicTacToeGameManager()
 
@@ -23,8 +20,17 @@ class MainActivityViewModel constructor(private val boardRepository: BoardReposi
     }
     val gameStatusText: LiveData<String> = _gameStatusText
 
-    private var selectedPlayerSymbol : String? = ""
-    fun getSelectedSquareValue() : String { return selectedPlayerSymbol!!}
+    private var selectedSquareSymbol : String = ""
+    fun getSelectedSquareValue() : String { return selectedSquareSymbol}
+
+    fun canUpdateSelectedSquare(position: Position) : Boolean
+    {
+        // If the game is over, we can't play anymore
+        if(ticTacToeGameManager.isGameOver) return false
+
+        // If the selected square is free, we can update it
+        return boardRepository.getSquare(position)!!.isFree
+    }
 
     fun updateGame(position: Position)
     {
@@ -33,39 +39,24 @@ class MainActivityViewModel constructor(private val boardRepository: BoardReposi
         checkForWin(position)
         checkForDraw()
         if(!ticTacToeGameManager.isGameOver) {
-            ticTacToeGameManager.playingPlayer = if(ticTacToeGameManager.playingPlayer == ticTacToeGameManager.players[0]) ticTacToeGameManager.players[1] else ticTacToeGameManager.players[0]
-            increaseRoundCount()
-            updatePlayerTurnText()
+            changePlayingPlayer()
+            increaseTurnCount()
+            updateGameStatusText()
         }
-    }
-
-    fun resetGame()
-    {
-        ticTacToeGameManager.restartGame()
-        boardRepository.cleanBoard()
-        _gameStatusText.postValue(player1TurnText)
-    }
-
-    fun canUpdateSelectedSquare(position: Position) : Boolean
-    {
-        if(ticTacToeGameManager.isGameOver) {
-            return false
-        }
-        return boardRepository.getSquare(position)!!.isFree
     }
 
     private fun updateSelectedSquare(position: Position) {
         boardRepository.updateSquare(position, false)
-        selectedPlayerSymbol = ticTacToeGameManager.playingPlayer.symbol.toString()
+        // The symbol written on the button will be the symbol of the playing player (X or O)
+        selectedSquareSymbol = ticTacToeGameManager.playingPlayer.symbol.toString()
     }
 
-    private fun updatePlayerPositions(position: Position)
-    {
+    private fun updatePlayerPositions(position: Position) {
+        // We add the selected square position to the list of the player's positions
         ticTacToeGameManager.playingPlayer.positions.add(position)
     }
 
-    private fun checkForWin(lastPositionPlayed: Position)
-    {
+    private fun checkForWin(lastPositionPlayed: Position) {
         if(ticTacToeGameManager.playerWin(ticTacToeGameManager.playingPlayer.positions, lastPositionPlayed))
             endGame(isAWinText)
     }
@@ -75,21 +66,32 @@ class MainActivityViewModel constructor(private val boardRepository: BoardReposi
             endGame(isADraw)
     }
 
-    private fun updatePlayerTurnText()
-    {
+    private fun changePlayingPlayer() {
+        // If the player 1 was playing it's now player 2 turn and vice versa
+        ticTacToeGameManager.playingPlayer = if(ticTacToeGameManager.playingPlayer == ticTacToeGameManager.players[0])
+                                                    ticTacToeGameManager.players[1]
+                                            else ticTacToeGameManager.players[0]
+    }
+
+    private fun increaseTurnCount() {
+        ticTacToeGameManager.turnNumber++
+    }
+
+    private fun updateGameStatusText() {
         when(ticTacToeGameManager.playingPlayer){
             ticTacToeGameManager.players[0] -> _gameStatusText.postValue(player1TurnText)
             ticTacToeGameManager.players[1] -> _gameStatusText.postValue(player2TurnText)
         }
     }
 
-    private fun increaseRoundCount() {
-        ticTacToeGameManager.turnNumber++
-    }
-
-    private fun endGame(endText : String)
-    {
+    private fun endGame(endText : String) {
         _gameStatusText.postValue(endText)
         ticTacToeGameManager.isGameOver = true
+    }
+
+    fun resetGame() {
+        ticTacToeGameManager.restartGame()
+        boardRepository.cleanBoard()
+        _gameStatusText.postValue(player1TurnText)
     }
 }

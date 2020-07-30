@@ -4,12 +4,11 @@ import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import com.example.tictactoe.models.Position
 import com.example.tictactoe.repositories.board.BoardRepository
-import com.example.tictactoe.repositories.game.TicTacToeGameManager
+import com.example.tictactoe.managers.game.TicTacToeGameManager
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.matchers.shouldBe
-import io.mockk.mockk
 
 class TicTacToeTest : FunSpec( {
 

@@ -3,14 +3,15 @@ package com.example.tictactoe.repositories.board
 import com.example.tictactoe.models.Square
 import com.example.tictactoe.models.Position
 import com.example.tictactoe.utilities.Constants
+import com.example.tictactoe.utilities.Constants.Companion.boardSize
 
 class BoardRepository : IBoardRepository {
-    private val board = Array(Constants.boardSize) { Array(Constants.boardSize){Square(Position(0,0))} }
+    private val board = Array(boardSize) { Array(boardSize){Square(Position(0,0))} }
 
     init
     {
-        for (i in 0 until Constants.boardSize) {
-            for (j in 0 until Constants.boardSize) {
+        for (i in 0 until boardSize) {
+            for (j in 0 until boardSize) {
                 board[i][j].position = Position(i,j)
             }
         }
@@ -25,8 +26,8 @@ class BoardRepository : IBoardRepository {
     }
 
     override fun cleanBoard() {
-        for (i in 0 until Constants.boardSize) {
-            for (j in 0 until Constants.boardSize) {
+        for (i in 0 until boardSize) {
+            for (j in 0 until boardSize) {
                 board[i][j].isFree = true
             }
         }
